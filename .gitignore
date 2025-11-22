@@ -1,0 +1,15 @@
+node_modules/
+.dist/
+dist/
+electron-dist/
+.env
+*.log
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env.py
+.idea/
+.vscode/

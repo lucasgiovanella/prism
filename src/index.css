@@ -1,0 +1,67 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: 'Outfit', sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: dark;
+  color: #FFFFFF;
+  background-color: #000000; /* Pure Black */
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@layer components {
+  .bg-surface {
+    @apply bg-[#09090B]; /* Zinc-950 */
+  }
+  
+  .backdrop-blur-glass {
+    @apply backdrop-blur-xl bg-black/80 border-b border-white/10;
+  }
+
+  .shadow-glass {
+    @apply shadow-md border border-white/10;
+  }
+  
+  .text-gradient {
+    @apply text-white;
+  }
+  
+  .btn-primary {
+    @apply bg-white text-black hover:bg-gray-200 transition-colors shadow-sm font-semibold;
+  }
+  
+  .btn-secondary {
+    @apply bg-black text-white border border-white/20 hover:bg-white/10 transition-colors shadow-sm;
+  }
+}
+
+body {
+  margin: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background-color: #000000;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #000000; 
+}
+::-webkit-scrollbar-thumb {
+  background: #27272A; /* Zinc-800 */
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #3F3F46; /* Zinc-700 */
+}
