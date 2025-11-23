@@ -2,8 +2,7 @@ import { app, BrowserWindow, ipcMain, dialog, shell } from 'electron';
 import path from 'path';
 import { spawn, ChildProcess } from 'child_process';
 import fs from 'fs/promises';
-import { existsSync, mkdirSync } from 'fs';
-import http from 'http';
+import { existsSync } from 'fs';
 
 let mainWindow: BrowserWindow | null = null;
 let pythonProcess: ChildProcess | null = null;
@@ -14,7 +13,10 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1280,
     height: 800,
+    minWidth: 1024,
+    minHeight: 600,
     backgroundColor: '#050816', // Matches tailwind background
+    icon: path.join(__dirname, '../src/assets/icons/icon.png'),
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: false,
@@ -25,7 +27,6 @@ function createWindow() {
 
   if (isDev) {
     mainWindow.loadURL('http://localhost:5173');
-    mainWindow.webContents.openDevTools();
   } else {
     mainWindow.loadFile(path.join(__dirname, '../dist/index.html'));
   }
@@ -113,8 +114,19 @@ ipcMain.handle('save-tutorial', async (event, { title, steps }) => {
       }
 
       markdownContent += `## Passo ${stepNum}\n\n`;
-      markdownContent += `${step.description}\n\n`;
-      markdownContent += `![Passo ${stepNum}](./assets/${imgFileName})\n\n`;
+
+      if (step.content_type === 'code') {
+        const lang = step.code_language || '';
+        markdownContent += '```' + lang + '\n';
+        markdownContent += (step.code_content || '') + '\n';
+        markdownContent += '```\n\n';
+      } else {
+        markdownContent += `${step.description}\n\n`;
+      }
+
+      if (step.image) {
+        markdownContent += `![Passo ${stepNum}](./assets/${imgFileName})\n\n`;
+      }
     }
 
     const mdPath = path.join(tutorialPath, 'manual.md');

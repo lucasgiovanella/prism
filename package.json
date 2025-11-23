@@ -1,7 +1,7 @@
 {
-  "name": "docgen-ai",
+  "name": "prism-ai",
   "version": "0.1.0",
-  "description": "DocGen AI - Desktop app for Windows 11 that observes user actions and generates PT-BR technical step-by-step tutorials in Markdown.",
+  "description": "Prism AI - Desktop app for Windows 11 that observes user actions and generates PT-BR technical step-by-step tutorials in Markdown.",
   "main": "electron-dist/main.js",
   "scripts": {
     "dev": "concurrently \"vite --config vite.config.mts\" \"tsc -p tsconfig.electron.json -w\" \"wait-on http://localhost:5173 && electron .\"",
@@ -11,11 +11,18 @@
     "start": "electron ."
   },
   "dependencies": {
-    "@dotlottie/react-player": "^1.6.19",
+    "@types/react-syntax-highlighter": "^15.5.13",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
     "electron": "^32.0.0",
     "lucide-react": "^0.460.0",
+    "motion": "^12.23.24",
     "react": "^18.3.0",
-    "react-dom": "^18.3.0"
+    "react-dom": "^18.3.0",
+    "react-markdown": "^10.1.0",
+    "react-syntax-highlighter": "^16.1.0",
+    "tailwind-merge": "^3.4.0",
+    "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
     "@rollup/rollup-win32-x64-msvc": "^4.53.3",
