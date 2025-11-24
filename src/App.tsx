@@ -17,6 +17,12 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [zoomedImage, setZoomedImage] = useState<string | null>(null);
   const [serverOnline, setServerOnline] = useState(false);
+  const [notification, setNotification] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
+
+  const showNotification = (message: string, type: 'success' | 'error' = 'success') => {
+    setNotification({ message, type });
+    setTimeout(() => setNotification(null), 3000);
+  };
 
   useEffect(() => {
     const timer = setTimeout(() => setIsLoading(false), 2000);
@@ -46,9 +52,9 @@ function App() {
   const handleSaveTutorial = async () => {
     const success = await saveTutorial(title, steps);
     if (success) {
-      alert('Tutorial salvo com sucesso!');
+      showNotification('Tutorial salvo com sucesso!');
     } else {
-      alert('Erro ao salvar tutorial.');
+      showNotification('Erro ao salvar tutorial.', 'error');
     }
   };
 
@@ -91,12 +97,12 @@ function App() {
       // @ts-ignore
       const result = await window.electronAPI.saveTutorial(exportData);
       if (result.success) {
-        alert(`Tutorial salvo em: ${result.path}`);
+        showNotification(`Tutorial salvo em: ${result.path}`);
       } else {
-        alert(`Erro ao salvar: ${result.message}`);
+        showNotification(`Erro ao salvar: ${result.message}`, 'error');
       }
     } else {
-      alert("Ambiente Electron não detectado (modo web).");
+      showNotification("Ambiente Electron não detectado (modo web).", 'error');
     }
   };
 
@@ -200,6 +206,14 @@ function App() {
         imageUrl={zoomedImage}
         onClose={() => setZoomedImage(null)}
       />
+
+      {notification && (
+        <div className={`fixed bottom-4 right-4 px-6 py-3 rounded-lg shadow-lg text-white font-medium z-50 transition-all ${
+          notification.type === 'success' ? 'bg-green-600' : 'bg-red-600'
+        }`}>
+          {notification.message}
+        </div>
+      )}
     </div>
   );
 }

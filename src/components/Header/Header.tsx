@@ -28,7 +28,7 @@ export const Header: React.FC<HeaderProps> = ({
                     type="text"
                     value={title}
                     onChange={(e) => onTitleChange(e.target.value)}
-                    className="bg-transparent text-xl font-bold text-white focus:outline-none placeholder-zinc-700 w-full"
+                    className="bg-transparent text-xl font-bold text-white focus:outline-none placeholder-zinc-700 w-full caret-white"
                     placeholder={!hasSteps ? "Área de Trabalho" : "Digite o título do tutorial..."}
                 />
             </div>

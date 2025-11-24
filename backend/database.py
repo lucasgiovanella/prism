@@ -34,9 +34,28 @@ def init_db():
             element_type TEXT,
             is_manual INTEGER DEFAULT 0,
             bounding_box TEXT,
+            content_type TEXT DEFAULT 'text',
+            code_language TEXT,
+            code_content TEXT,
             FOREIGN KEY (tutorial_id) REFERENCES tutorials(id) ON DELETE CASCADE
         )
     """)
+
+    # Migration: Add new columns if they don't exist (for existing databases)
+    try:
+        cursor.execute("ALTER TABLE steps ADD COLUMN content_type TEXT DEFAULT 'text'")
+    except sqlite3.OperationalError:
+        pass # Column likely exists
+
+    try:
+        cursor.execute("ALTER TABLE steps ADD COLUMN code_language TEXT")
+    except sqlite3.OperationalError:
+        pass
+
+    try:
+        cursor.execute("ALTER TABLE steps ADD COLUMN code_content TEXT")
+    except sqlite3.OperationalError:
+        pass
     
     conn.commit()
     conn.close()
@@ -61,8 +80,9 @@ def create_tutorial(title: str, steps: List[Dict]) -> str:
     for idx, step in enumerate(steps):
         cursor.execute("""
             INSERT INTO steps (id, tutorial_id, step_order, element_name, description, 
-                             screenshot_base64, element_type, is_manual, bounding_box)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                             screenshot_base64, element_type, is_manual, bounding_box,
+                             content_type, code_language, code_content)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (
             step.get('id', str(uuid.uuid4())),
             tutorial_id,
@@ -72,7 +92,10 @@ def create_tutorial(title: str, steps: List[Dict]) -> str:
             step.get('screenshot_base64', ''),
             step.get('element_type', ''),
             1 if step.get('is_manual', False) else 0,
-            json.dumps(step.get('bounding_box'))
+            json.dumps(step.get('bounding_box')),
+            step.get('content_type', 'text'),
+            step.get('code_language', ''),
+            step.get('code_content', '')
         ))
     
     conn.commit()
@@ -123,7 +146,7 @@ def get_tutorial(tutorial_id: str) -> Optional[Dict]:
     # Get steps
     cursor.execute("""
         SELECT id, element_name, description, screenshot_base64, element_type, 
-               is_manual, bounding_box
+               is_manual, bounding_box, content_type, code_language, code_content
         FROM steps 
         WHERE tutorial_id = ? 
         ORDER BY step_order
@@ -138,7 +161,10 @@ def get_tutorial(tutorial_id: str) -> Optional[Dict]:
             'screenshot_base64': row[3],
             'element_type': row[4],
             'is_manual': bool(row[5]),
-            'bounding_box': json.loads(row[6]) if row[6] else None
+            'bounding_box': json.loads(row[6]) if row[6] else None,
+            'content_type': row[7] or 'text',
+            'code_language': row[8],
+            'code_content': row[9]
         })
     
     conn.close()
@@ -171,8 +197,9 @@ def update_tutorial(tutorial_id: str, title: str, steps: List[Dict]) -> bool:
     for idx, step in enumerate(steps):
         cursor.execute("""
             INSERT INTO steps (id, tutorial_id, step_order, element_name, description, 
-                             screenshot_base64, element_type, is_manual, bounding_box)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                             screenshot_base64, element_type, is_manual, bounding_box,
+                             content_type, code_language, code_content)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (
             step.get('id'),
             tutorial_id,
@@ -182,7 +209,10 @@ def update_tutorial(tutorial_id: str, title: str, steps: List[Dict]) -> bool:
             step.get('screenshot_base64', ''),
             step.get('element_type', ''),
             1 if step.get('is_manual', False) else 0,
-            json.dumps(step.get('bounding_box'))
+            json.dumps(step.get('bounding_box')),
+            step.get('content_type', 'text'),
+            step.get('code_language', ''),
+            step.get('code_content', '')
         ))
     
     conn.commit()

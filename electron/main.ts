@@ -39,12 +39,12 @@ function startPythonBackend() {
 
   let pythonPath = 'python';
   if (process.platform === 'win32') {
-    const venvPython = path.join(__dirname, '../venv/Scripts/python.exe');
+    const venvPython = path.join(__dirname, '../backend/venv/Scripts/python.exe');
     if (require('fs').existsSync(venvPython)) {
       pythonPath = venvPython;
     }
   } else {
-    const venvPython = path.join(__dirname, '../venv/bin/python');
+    const venvPython = path.join(__dirname, '../backend/venv/bin/python');
     if (require('fs').existsSync(venvPython)) {
       pythonPath = venvPython;
     }
@@ -113,7 +113,8 @@ ipcMain.handle('save-tutorial', async (event, { title, steps }) => {
         await fs.writeFile(imgPath, base64Data, 'base64');
       }
 
-      markdownContent += `## Passo ${stepNum}\n\n`;
+      const stepTitle = step.element_name || `Passo ${stepNum}`;
+      markdownContent += `## ${stepTitle}\n\n`;
 
       if (step.content_type === 'code') {
         const lang = step.code_language || '';
