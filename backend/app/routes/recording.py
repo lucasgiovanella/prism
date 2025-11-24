@@ -163,7 +163,15 @@ async def process_step(req: ProcessStepRequest):
     if is_generic:
         print(f"[Semantic Refinement] Detected generic description: {final_desc}")
         # Use vision AI to extract functional text
-        final_desc = await ollama.call_ollama_vision_ocr(req.image_base64)
+        # Calculate center of the bounding box for smart cropping
+        click_coords = None
+        if req.bounding_box:
+            # Bounding box is relative to the image (from recorder.py)
+            cx = (req.bounding_box.left + req.bounding_box.right) // 2
+            cy = (req.bounding_box.top + req.bounding_box.bottom) // 2
+            click_coords = {'x': cx, 'y': cy}
+            
+        final_desc = await ollama.call_ollama_vision_ocr(req.image_base64, click_coords=click_coords)
         print(f"[Semantic Refinement] Refined to: {final_desc}")
     elif req.context:
         # Normal text refinement for non-generic descriptions
