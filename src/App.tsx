@@ -3,6 +3,7 @@ import { Sidebar } from './components/Sidebar/Sidebar';
 import { Header } from './components/Header/Header';
 import { StepList } from './components/StepList/StepList';
 import { ImageZoomModal } from './components/Modals/ImageZoomModal';
+import { SettingsModal } from './components/SettingsModal';
 import { useRecording } from './hooks/useRecording';
 import { useTutorials } from './hooks/useTutorials';
 import { api } from './services/api';
@@ -18,6 +19,7 @@ function App() {
   const [zoomedImage, setZoomedImage] = useState<string | null>(null);
   const [serverOnline, setServerOnline] = useState(false);
   const [notification, setNotification] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   const showNotification = (message: string, type: 'success' | 'error' = 'success') => {
     setNotification({ message, type });
@@ -168,6 +170,8 @@ function App() {
 
   return (
     <div className="flex w-screen h-screen bg-black text-white font-sans overflow-hidden min-w-[1024px]">
+      <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
+
       <Sidebar
         isRecording={isRecording}
         serverOnline={serverOnline}
@@ -175,6 +179,7 @@ function App() {
         onToggleRecording={toggleRecording}
         onLoadTutorial={handleLoadTutorial}
         onDeleteTutorial={handleDeleteTutorial}
+        onOpenSettings={() => setIsSettingsOpen(true)}
       />
 
       <main className="flex-1 flex flex-col min-w-0 bg-zinc-950 relative z-10">
@@ -208,9 +213,8 @@ function App() {
       />
 
       {notification && (
-        <div className={`fixed bottom-4 right-4 px-6 py-3 rounded-lg shadow-lg text-white font-medium z-50 transition-all ${
-          notification.type === 'success' ? 'bg-green-600' : 'bg-red-600'
-        }`}>
+        <div className={`fixed bottom-4 right-4 px-6 py-3 rounded-lg shadow-lg text-white font-medium z-50 transition-all ${notification.type === 'success' ? 'bg-green-600' : 'bg-red-600'
+          }`}>
           {notification.message}
         </div>
       )}

@@ -4,6 +4,7 @@ import { Play } from "../animate-ui/icons/play"
 import { SavedTutorial } from '../../types';
 import { Pause } from "../animate-ui/icons/pause"
 import { Trash2 } from '../animate-ui/icons/trash-2';
+import { Settings } from 'lucide-react';
 
 interface SidebarProps {
     isRecording: boolean;
@@ -12,6 +13,7 @@ interface SidebarProps {
     onToggleRecording: () => void;
     onLoadTutorial: (id: string) => void;
     onDeleteTutorial: (id: string) => void;
+    onOpenSettings?: () => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -20,12 +22,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
     savedTutorials,
     onToggleRecording,
     onLoadTutorial,
-    onDeleteTutorial
+    onDeleteTutorial,
+    onOpenSettings
 }) => {
     return (
         <aside className="w-72 bg-black border-r border-white/10 flex flex-col z-20">
-            <div className="p-8 border-b border-white/10">
-                <div className="flex items-center mb-2">
+            <div className="p-8 border-b border-white/10 flex justify-between items-center">
+                <div className="flex items-center gap-2">
                     <div className="w-16 h-16 rounded-lg flex items-center justify-center shadow-sm">
                         <img src="/src/assets/icons/icon_bg.png" alt="Icon" className="w-full h-full" />
                     </div>
@@ -33,6 +36,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
                         Prism
                     </h1>
                 </div>
+                {onOpenSettings && (
+                    <button
+                        onClick={onOpenSettings}
+                        className="p-2 hover:bg-white/10 rounded-lg transition-colors text-white/60 hover:text-white"
+                        title="Configurações"
+                    >
+                        <Settings size={20} />
+                    </button>
+                )}
             </div>
 
             <nav className="flex-1 p-6 space-y-6 overflow-y-auto">

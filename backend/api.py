@@ -2,7 +2,7 @@ import sys
 import ctypes
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routes import health, tutorials, recording
+from app.routes import health, tutorials, recording, settings
 
 # --- DPI Awareness ---
 try:
@@ -24,6 +24,7 @@ app.add_middleware(
 app.include_router(health.router)
 app.include_router(tutorials.router)
 app.include_router(recording.router)
+app.include_router(settings.router, prefix="/settings", tags=["settings"])
 
 if __name__ == "__main__":
     import uvicorn
